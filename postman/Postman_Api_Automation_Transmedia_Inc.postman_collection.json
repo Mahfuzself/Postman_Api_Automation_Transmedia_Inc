@@ -1,0 +1,163 @@
+{
+	"info": {
+		"_postman_id": "96c2d852-3086-4a6c-b824-5c3bc2019157",
+		"name": "Postman_Api_Automation_Transmedia_Inc",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26831150"
+	},
+	"item": [
+		{
+			"name": "Add list",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Generate random name\r",
+							"const randomName = `name_${Math.random().toString(36).substring(7)}`;\r",
+							"\r",
+							"// Generate random order between 1 and 100\r",
+							"const randomOrder = Math.floor(Math.random() * 100) + 1;\r",
+							"\r",
+							"// Set variables\r",
+							"pm.environment.set(\"randomName\", randomName);\r",
+							"pm.environment.set(\"randomOrder\", randomOrder);\r",
+							"\r",
+							"// Set order as orderId too\r",
+							"pm.environment.set(\"orderId\", randomOrder);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();\r",
+							"\r",
+							"\r",
+							"pm.test(\"TC1: Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"TC2: Status text is 'Created'\", function () {\r",
+							"    pm.expect(pm.response.status).to.eql(\"Created\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"TC3: Response time is under 100ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(100);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"TC4: Response has a boardId\", function () {\r",
+							"    pm.expect(response).to.have.property(\"boardId\");\r",
+							"    pm.expect(response.boardId).to.eql(1); // Check if boardId === 1\r",
+							"});\r",
+							"\r",
+							"pm.test(\"TC5: Response has a name\", function () {\r",
+							"    pm.expect(response).to.have.property(\"name\");\r",
+							"    pm.expect(response.name).to.be.a(\"string\");\r",
+							"    console.log(\"Name:\", response.name);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"TC6: Response has an order\", function () {\r",
+							"    pm.expect(response).to.have.property(\"order\");\r",
+							"    pm.expect(response.order).to.be.a(\"number\");\r",
+							"    console.log(\"Order:\", response.order);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"TC7: Response has a created date\", function () {\r",
+							"    pm.expect(response).to.have.property(\"created\");\r",
+							"    pm.expect(response.created).to.be.a(\"string\");\r",
+							"    console.log(\"Created:\", response.created);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"TC8: Response has an id\", function () {\r",
+							"    pm.expect(response).to.have.property(\"id\");\r",
+							"    pm.expect(response.id).to.be.a(\"number\");\r",
+							"    console.log(\"ID:\", response.id);\r",
+							"});\r",
+							"\r",
+							"pm.environment.set(\"id\", response.id);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"boardId\": 1,\r\n  \"name\": \"{{randomName}}\",\r\n  \"order\": {{randomOrder}}\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/lists",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"lists"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"TC1: Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"TC2: Status text is 'OK'\", function () {\r",
+							"    pm.expect(pm.response.status).to.eql(\"OK\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"TC3: Response time is under 100ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(100);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/api/lists/{{id}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"lists",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
